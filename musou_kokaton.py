@@ -241,7 +241,24 @@ class Score:
     def update(self, screen: pg.Surface):
         self.image = self.font.render(f"Score: {self.value}", 0, self.color)
         screen.blit(self.image, self.rect)
-
+    
+    
+class Gravity(pg.sprite.Sprite):
+    """
+    重力場を発生させるクラス
+    """
+    def __init__(self, life):
+        super().__init__()
+        self.life = life
+        self.image = pg.Surface((WIDTH, HEIGHT))
+        pg.draw.rect(self.image, (0, 0, 0), (0, 0, WIDTH, HEIGHT))
+        self.image.set_alpha(128)
+        self.rect = self.image.get_rect()
+        
+    def update(self):
+        self.life -= 1
+        if self.life < 0:
+            self.kill()
 
 def main():
     pg.display.set_caption("真！こうかとん無双")
@@ -254,6 +271,7 @@ def main():
     beams = pg.sprite.Group()
     exps = pg.sprite.Group()
     emys = pg.sprite.Group()
+    gravitys = pg.sprite.Group()
 
     tmr = 0
     clock = pg.time.Clock()
@@ -269,6 +287,19 @@ def main():
                 bird.speed = 20
             else:
                 bird.speed = 10
+        
+        if key_lst:
+            if key_lst[pg.K_RETURN] and score.value >= 200:
+                score.value -= 200
+                gravitys.add(Gravity(400))
+                
+            for emy in pg.sprite.groupcollide(emys, gravitys, True, False).keys():
+                exps.add(Explosion(emy, 100))
+                score.value += 10
+
+            for bomb in pg.sprite.groupcollide(bombs, gravitys, True, False).keys():
+                exps.add(Explosion(bomb, 50))  
+                score.value += 10
                 
         screen.blit(bg_img, [0, 0])
 
@@ -306,6 +337,8 @@ def main():
         exps.update()
         exps.draw(screen)
         score.update(screen)
+        gravitys.update()
+        gravitys.draw(screen)
         pg.display.update()
         tmr += 1
         clock.tick(50)
