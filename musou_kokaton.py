@@ -308,6 +308,7 @@ def main():
                 score.update(screen)
                 pg.display.update()
                 time.sleep(2)
+                
                 return 
 
         bird.update(key_lst, screen)
