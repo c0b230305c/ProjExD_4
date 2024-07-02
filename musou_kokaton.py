@@ -72,6 +72,7 @@ class Bird(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = xy
         self.speed = 10
+    
 
     def change_img(self, num: int, screen: pg.Surface):
         """
@@ -220,7 +221,7 @@ class Enemy(pg.sprite.Sprite):
         if self.rect.centery > self.bound:
             self.vy = 0
             self.state = "stop"
-        self.rect.move_ip(vx, vy)
+        self.rect.move_ip(self.vx, self.vy)
 
 
 class Score:
@@ -263,6 +264,12 @@ def main():
                 return 0
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 beams.add(Beam(bird))
+        if key_lst:
+            if key_lst[pg.K_LSHIFT]:
+                bird.speed = 20
+            else:
+                bird.speed = 10
+                
         screen.blit(bg_img, [0, 0])
 
         if tmr%200 == 0:  # 200フレームに1回，敵機を出現させる
@@ -288,7 +295,7 @@ def main():
             pg.display.update()
             time.sleep(2)
             return
-
+    
         bird.update(key_lst, screen)
         beams.update()
         beams.draw(screen)
