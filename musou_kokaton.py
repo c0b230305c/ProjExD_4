@@ -328,6 +328,7 @@ def main():
             if bird.state == "hyper":
                 exps.add(Explosion(i, 50))
                 score.value += 1
+                
             elif bird.state == "normal":
                 bird.change_img(8, screen)
                 score.update(screen)
