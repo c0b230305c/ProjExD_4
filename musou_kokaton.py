@@ -299,7 +299,7 @@ def main():
 
             for bomb in pg.sprite.groupcollide(bombs, gravitys, True, False).keys():
                 exps.add(Explosion(bomb, 50))  
-                score.value += 10
+                score.value += 1
                 
         screen.blit(bg_img, [0, 0])
 
